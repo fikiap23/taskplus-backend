@@ -3,6 +3,57 @@ import push from 'web-push'
 import axios from 'axios'
 
 const taskController = {
+
+ getAllTasks: async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Initialize an array to store tasks with subject information
+    const tasksWithSubjects = [];
+
+    // Iterate through each subject
+    for (const subject of user.subjects) {
+      // Iterate through each task in the subject
+      for (const task of subject.tasks) {
+        const taskWithSubject = {
+          subjectData: {
+            subjectId: subject._id,
+            subjectName: subject.name,
+            dosen: subject.dosen,
+            // Add other subject information if needed
+          },
+          title: task.title,
+          description: task.description,
+          dueDate: task.dueDate,
+          completed: task.completed,
+          _id: task._id,
+          createdAt: task.createdAt,
+          updatedAt: task.updatedAt,
+        };
+
+        tasksWithSubjects.push(taskWithSubject);
+      }
+    }
+
+    // Sort tasks based on dueDate
+    tasksWithSubjects.sort((a, b) => {
+      const dateA = new Date(a.dueDate);
+      const dateB = new Date(b.dueDate);
+      return dateA - dateB;
+    });
+
+    return res.status(200).json(tasksWithSubjects);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+},
+
   // Membuat tugas baru untuk suatu mata pelajaran milik pengguna tertentu
   createTask: async (req, res) => {
     try {

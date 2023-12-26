@@ -4,6 +4,7 @@ import protectRoute from '../middlewares/protectRoute.js'
 
 const router = express.Router()
 
+router.get('/list', protectRoute, taskController.getAllTasks)
 // Rute untuk membuat tugas baru
 router.post('/:subjectId/create', protectRoute, taskController.createTask)
 

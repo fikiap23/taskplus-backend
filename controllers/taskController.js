@@ -155,7 +155,7 @@ const taskController = {
     try {
       const { subjectId, taskId } = req.params
       const userId = req.user._id
-      const { title, description, type, subjectName, dueDate } = req.body
+      const { title, description, dueDate } = req.body
 
       const user = await User.findById(userId)
       if (!user) {
@@ -175,8 +175,6 @@ const taskController = {
       // Update task properties
       task.title = title
       task.description = description
-      task.type = type
-      task.subjectName = subjectName
       task.dueDate = dueDate
 
       // Save changes to the database
@@ -184,7 +182,7 @@ const taskController = {
 
       return res
         .status(200)
-        .json({ title, description, type, subjectName, dueDate })
+        .json({ title, description, dueDate })
     } catch (error) {
       console.error(error)
       return res.status(500).json({ message: 'Internal Server Error' })

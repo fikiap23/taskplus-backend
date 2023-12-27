@@ -4,9 +4,10 @@ import axios from 'axios'
 
 const taskController = {
 
- getAllTasks: async (req, res) => {
+getAllTasks: async (req, res) => {
   try {
     const userId = req.user._id;
+    const filterDate = req.query.filterDate; // Get the filterDate query parameter
 
     const user = await User.findById(userId);
     if (!user) {
@@ -20,23 +21,28 @@ const taskController = {
     for (const subject of user.subjects) {
       // Iterate through each task in the subject
       for (const task of subject.tasks) {
-        const taskWithSubject = {
-          subjectData: {
-            subjectId: subject._id,
-            subjectName: subject.name,
-            dosen: subject.dosen,
-            // Add other subject information if needed
-          },
-          title: task.title,
-          description: task.description,
-          dueDate: task.dueDate,
-          completed: task.completed,
-          _id: task._id,
-          createdAt: task.createdAt,
-          updatedAt: task.updatedAt,
-        };
+        const taskDueDate = new Date(task.dueDate).toISOString().split('T')[0]; // Extract date part only
 
-        tasksWithSubjects.push(taskWithSubject);
+        // Check if the task's dueDate matches the filterDate
+        if (!filterDate || taskDueDate === filterDate) {
+          const taskWithSubject = {
+            subjectData: {
+              subjectId: subject._id,
+              subjectName: subject.name,
+              dosen: subject.dosen,
+              // Add other subject information if needed
+            },
+            title: task.title,
+            description: task.description,
+            dueDate: task.dueDate,
+            completed: task.completed,
+            _id: task._id,
+            createdAt: task.createdAt,
+            updatedAt: task.updatedAt,
+          };
+
+          tasksWithSubjects.push(taskWithSubject);
+        }
       }
     }
 

@@ -5,6 +5,7 @@ import protectRoute from '../middlewares/protectRoute.js';
 const router = express.Router();
 
 router.get('/list', protectRoute, notesController.getNotes);
+router.get('/search/:query', protectRoute, notesController.searchNotes);
 router.get('/:noteId', protectRoute, notesController.getNoteById);
 
 router.put('/:noteId', protectRoute, notesController.updateNote);

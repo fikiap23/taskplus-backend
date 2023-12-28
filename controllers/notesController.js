@@ -160,6 +160,30 @@ const notesController = {
       return res.status(500).json({ message: 'Internal Server Error' });
     }
   },
+
+  // Mencari catatan berdasarkan title atau description (like SQL)
+  searchNotes: async (req, res) => {
+    try {
+      const userId = req.user._id;
+      const { query } = req.params;
+
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Cari catatan yang memiliki title atau description mirip dengan query
+      const matchedNotes = user.notes.filter(
+        (note) =>
+          note.title.includes(query) || note.description.includes(query)
+      );
+
+      return res.status(200).json(matchedNotes);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  },
 };
 
 export default notesController;

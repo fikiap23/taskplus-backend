@@ -34,11 +34,6 @@ const taskSchema = mongoose.Schema(
 
 const noteSchema = mongoose.Schema(
   {
-    createdBy: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
     title: {
       type: String,
       required: true,
@@ -46,16 +41,6 @@ const noteSchema = mongoose.Schema(
     description: {
       type: String,
       required: true,
-    },
-    createAt: {
-      type: Date,
-      required: true,
-      default: Date.now(),
-    },
-    updateAt: {
-      type: Date,
-      required: true,
-      default: Date.now(),
     },
   },
   {

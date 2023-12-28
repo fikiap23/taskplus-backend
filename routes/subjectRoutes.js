@@ -4,10 +4,13 @@ import protectRoute from '../middlewares/protectRoute.js'
 
 const router = express.Router()
 
-router.post('/create', protectRoute, subjectController.createSubject)
 router.get('/list', protectRoute, subjectController.getSubjects)
+router.get('/types', protectRoute, subjectController.getAllSubjectNames)
+router.get('/:subjectId', protectRoute, subjectController.getSubjectById)
+
+router.put('/:subjectId', protectRoute, subjectController.updateSubject)
+router.post('/create', protectRoute, subjectController.createSubject)
 router.delete('/:subjectId', protectRoute, subjectController.deleteSubject)
 
-router.get('/types', protectRoute, subjectController.getAllSubjectNames)
 
 export default router

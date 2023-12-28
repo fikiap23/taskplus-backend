@@ -7,6 +7,7 @@ import cors from 'cors'
 import subjectRoutes from './routes/subjectRoutes.js'
 import taskRoutes from './routes/taskRoutes.js'
 import notesRotes from './routes/notesRoutes.js'
+import { v2 as cloudinary } from 'cloudinary'
 
 dotenv.config()
 
@@ -17,6 +18,12 @@ const app = express()
 app.use(
   cors()
 )
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
 
 const PORT = process.env.PORT || 5000
 

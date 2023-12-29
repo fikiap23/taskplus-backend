@@ -96,30 +96,42 @@ getAllTasks: async (req, res) => {
     }
   },
 
-  // Mendapatkan daftar tugas untuk suatu mata pelajaran milik pengguna tertentu
-  getTasks: async (req, res) => {
-    try {
-      const { subjectId } = req.params
-      const userId = req.user._id
+getTasks: async (req, res) => {
+  try {
+    const { subjectId } = req.params
+    const userId = req.user._id
 
-      const user = await User.findById(userId)
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' })
-      }
-
-      const subject = user.subjects.id(subjectId)
-      if (!subject) {
-        return res.status(404).json({ message: 'Subject not found' })
-      }
-
-      const tasks = subject.tasks
-
-      return res.status(200).json(tasks)
-    } catch (error) {
-      console.error(error)
-      return res.status(500).json({ message: 'Internal Server Error' })
+    const user = await User.findById(userId)
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
     }
-  },
+
+    const subject = user.subjects.id(subjectId)
+    if (!subject) {
+      return res.status(404).json({ message: 'Subject not found' })
+    }
+
+    const tasks = subject.tasks.map(task => ({
+      subjectData: {
+        subjectId: subject._id,
+        subjectName: subject.name,
+        dosen: subject.dosen
+      },
+      title: task.title,
+      description: task.description,
+      dueDate: task.dueDate,
+      completed: task.completed,
+      _id: task._id,
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt
+    }))
+
+    return res.status(200).json(tasks)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: 'Internal Server Error' })
+  }
+},
 
   // Menghapus suatu tugas dari suatu mata pelajaran milik pengguna tertentu
   deleteTask: async (req, res) => {
